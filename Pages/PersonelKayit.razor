@@ -1,0 +1,134 @@
+﻿@page "/personelkayit"
+
+@using BlazorApp1.Models
+
+@inject ILogger<Personel> Logger
+
+<PageTitle>Personel Kayıt</PageTitle>
+
+<h3>Personel Kayıt</h3>
+
+
+<EditForm Model="Model" OnValidSubmit="Submit" FormName="Personel">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div>
+        <label>
+            Personel No:
+            <InputText @bind-Value="Model!.Id" class="form-control" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Personel Adı:
+            <InputText @bind-Value="Model!.Name" class="form-control" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Doğum Tarihi:
+            <InputDate @bind-Value="Model!.BirthDate" class="form-control" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Cinsiyet:
+            <InputRadioGroup Name="genderRadioGroup" @bind-Value="Model!.Gender">
+                @foreach (var option in Options ?? [])
+                {
+                    <div class="form-check">
+                        <InputRadio class="form-check-input" id="@option.id" Value="@option.id" />
+                        <label class="form-check-label" for="@option.id">@option.lable</label>
+                    </div>
+                }
+            </InputRadioGroup>
+        </label>
+    </div>
+    <div>
+        <label>
+            Ehliyet:
+            <InputCheckbox @bind-Value="Model!.DrivingLicence" class="form-check-input" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Askerlik:
+            <InputCheckbox @bind-Value="Model!.MilitaryService" class="form-check-input" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Bölüm:
+            <InputSelect @bind-Value="Model!.Department" class="form-select">
+                <option value="">
+                    Bölüm Seçin ...
+                </option>
+                <option checked="@(Model!.Department == "IT")"
+                        value="IT">
+                    Bilgi İşlem
+                </option>
+                <option checked="@(Model!.Department == "PZ")"
+                        value="PZ">
+                    Pazarlama
+                </option>
+                <option checked="@(Model!.Department == "IK")"
+                        value="IK">
+                    İnsan Kaynakları
+                </option>
+            </InputSelect>
+        </label>
+    </div>
+    <div>
+        <label>
+            Maaş:
+            <InputNumber @bind-Value="Model!.Salary" class="form-control" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Açıklama:
+            <InputTextArea @bind-Value="Model!.Description" class="form-control" />
+        </label>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary">Kaydet</button>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private Personel? Model { get; set; }
+    
+    private List<(String id, string lable)>? Options { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Model ??= new() { BirthDate = DateTime.UtcNow };
+
+        var list = new List<(String id, string lable)>();
+        list.Add(("E", "Erkek"));
+        list.Add(("K", "Kadın"));
+
+        Options = list;
+    }
+
+    private void Submit()
+    {
+        Logger.LogInformation("Id = {Id} " + 
+            "Name = {Name} " +
+            "Description = {Description} " +
+            "Department = {Department} " +
+            "Salary = {Salary} " +
+            "DrivingLicence = {DrivingLicence} " +
+            "MilitaryService = {MilitaryService} " +
+            "BirthDate = {BirthDate} ",
+            Model?.Id, 
+            Model?.Name,
+            Model?.Description,
+            Model?.Department,
+            Model?.Salary,
+            Model?.DrivingLicence,
+            Model?.MilitaryService,
+            Model?.BirthDate);
+    }
+}

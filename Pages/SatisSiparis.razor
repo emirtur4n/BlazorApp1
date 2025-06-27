@@ -1,0 +1,737 @@
+﻿@page "/satissiparis"
+@using BlazorApp1.Models
+
+<PageTitle>Satış Sipariş</PageTitle>
+
+<h3>Satış Siparişi</h3>
+
+<div class="container shadow p-3 border my-3">
+
+    <EditForm Model="Model" OnValidSubmit="Submit" FormName="SatisSiparisFiltre">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="row">
+            <div class="col">
+
+                <div class="row">
+                    <div class="col">
+                        <label>
+                            Bayi
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputSelect @bind-Value="Model!.Bayi" class="form-select">
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Fiş No
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputText @bind-Value="Model!.FisNo" class="form-control" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Tarih
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputDate @bind-Value="Model!.Tarih" class="form-control" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Cari Hesap
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputSelect @bind-Value="Model!.CariHesap" class="form-select">
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Tür
+                        </label>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <InputRadioGroup Name="Tur" @bind-Value="Model!.Tur" class="form-select">
+                                @foreach (var secenek in TurSecenek ?? [])
+                                {
+                                    <div class="col-4">
+                                        <InputRadio class="form-check-input" id="@secenek.id" Value="@secenek.id">
+                                        </InputRadio>
+                                        <label class="form-check-label" for="@secenek.id">
+                                            @secenek.lable
+                                        </label>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <label>
+                            Birim/Ofis
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputSelect @bind-Value="Model!.Birim" class="form-select">
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Özel Kod
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputText @bind-Value="Model!.OzelKod" class="form-control" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Müşteri Temsilcisi
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputSelect @bind-Value="Model!.MusteriTemsilcisi" class="form-select">
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Fatura Adresi
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputSelect @bind-Value="Model!.FaturaAdresi" class="form-select">
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 mb-1">
+            <button type="submit" class="btn btn-outline-primary" @onclick="UrunDialogAc">
+                <i class="fa fa-plus" />
+                Ürün Ekle
+            </button>
+        </div>
+    </EditForm>
+    <div syle="max-width:800px">
+        <div class="table-responsive text-nowrap fs-6">
+            <table class="table table-hover table-bordered border-primary">
+                <thead class="table-info">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Ürün Kodu</th>
+                        <th scope="col">Ürün Adı</th>
+                        <th scope="col">Miktarı</th>
+                        <th scope="col">Ödeme</th>
+                        <th scope="col">Peşinat</th>
+                        <th scope="col">Taksit Adedi</th>
+                        <th scope="col">Taksit Tutarı</th>
+                        <th scope="col">Fiyat/Tutar</th>
+                        <th scope="col">İndirim/Masraf</th>
+                        <th scope="col">Toplam Tutarı</th>
+                        <th scope="col">Temin Tarihi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var satis in Satislar)
+                    {
+                        <tr>
+                            <th scope="row">
+                                <button type="submit" class="btn btn-outline-danger" @onclick="@(e => SatisSil(@satis.UrunKodu))">
+                                    <i class="fa fa-minus" />
+                                </button>
+                            </th>
+                            <td>@satis.UrunKodu</td>
+                            <td>@satis.UrunAdi</td>
+                            <td>@satis.Miktar</td>
+                            <td>@satis.Odeme</td>
+                            <td>@satis.Pesinat</td>
+                            <td>@satis.TaksitAdet</td>
+                            <td>@satis.TaksitTutar</td>
+                            <td>@satis.Fiyat</td>
+                            <td>@satis.Indirim</td>
+                            <td>@satis.ToplamTutar</td>
+                            <td>@satis.TeminTarih</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-6">
+        <div class="container shadow border">
+            <EditForm Model="Model" OnValidSubmit="Submit" FormName="SatisSiparisFiltre2">
+                <div class="row mt-1">
+                    <div class="col">
+                        <label>
+                            Ürün Grubu
+                        </label>
+                    </div>
+                    <div class="col">
+                        <InputSelect @bind-Value="Model!.UrunGrubu" class="form-select">
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label>
+                            Ürün Adı
+                        </label>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex">
+                            <InputText @bind-Value="Model!.UrunAdi" class="form-control" placeholder="Ürün Adından Ara" />
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fa fa-search" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row table-bordered mt-2">
+                    <div class="col table-responsive">
+                        <table class="table table-hover table-borderless">
+                            <tbody>
+                                @for (var i = 1; i < 6; i++)
+                                {
+                                    <tr>
+                                        <th scope="row">
+                                            <button type="submit" class="btn btn-outline-light text-dark">
+                                                <i class="fa fa-cube" />
+                                            </button>
+                                        </th>
+                                        <td class="w-25">SU ARITMA</td>
+                                        <td class="w-75"> Cihaz @i</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="container shadow border">
+            <div class="row mt-2">
+                <div class="col">
+                    <label class="fw-lighter">
+                        Cihaz 1 Fiyatları
+                    </label>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <th>Tanımı</th>
+                        <th>Peşinat</th>
+                        <th>Taksit Sayısı</th>
+                        <th>Taksit Tutarı</th>
+                        <th>Toplam Tutar</th>
+                        </thead>
+                        <tbody>
+                            @for (var i = 1; i < 6; i++)
+                            {
+                                <tr>
+                                    <td>Ödeme Tipi @i</td>
+                                    <td>@i</td>
+                                    <td>@i</td>
+                                    <td>@i</td>
+                                    <td>@i</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="container shadow border">
+            <div class="row mt-1">
+                <div class="col">
+                    <label class="fw-lighter">
+                        Cihaz 1 İndirim/Masraf Girişleri
+                    </label>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col">
+                            <br /><br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <br /><br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-10">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fa fa-plus" />
+                                İskonto/Masraf Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <EditForm Model="Model2" OnValidSubmit="Submit" FormName="Hesaplama">
+                        <div class="row">
+                            <div class="col">
+                                <label>
+                                    Satır Tutarı
+                                </label>
+                            </div>
+                            <div class="col">
+                                <InputNumber readonly @bind-Value="Model2.SatirTutari" class="form-control text-end">
+                                </InputNumber>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col">
+                                <label>
+                                    İskonto+Masraf
+                                </label>
+                            </div>
+                            <div class="col">
+                                <InputNumber readonly @bind-Value="Model2.IskontoMasraf" class="form-control text-end">
+                                </InputNumber>
+                            </div>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col">
+                                <label>
+                                    Toplam Tutar
+                                </label>
+                            </div>
+                            <div class="col">
+                                <InputNumber readonly @bind-Value="Model2.SonucTutari" class="form-control text-end">
+                                </InputNumber>
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <table class="table table-hover table-bordered border-primary">
+                    <thead class="table-info">
+                    <th>#</th>
+                    <th>Türü (Lehtar)</th>
+                    <th>Hesaplama</th>
+                    <th>Miktar</th>
+                    <th>Hesaplanan</th>
+                    <th>Açıklama</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var tmp in IskontoMasraflar)
+                        {
+                            <tr>
+                                <th scope="row">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fa fa-minus" />
+                                    </button>
+                                </th>
+                                <td class="table-danger">@tmp.Tur</td>
+                                <td>@tmp.Hesaplama</td>
+                                <td class="text-end">@tmp.Miktar</td>
+                                <td class="text-end">@tmp.Hesaplanan</td>
+                                <td>@tmp.Aciklama</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <EditForm Model="Model2" OnValidSubmit="Submit" FormName="Hesaplama2">
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <label>
+                                    İskonto
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <InputNumber readonly @bind-Value="Model2.Iskonto" class="form-control text-end">
+                                </InputNumber>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <label>
+                                    Masraf
+                                </label>
+                            </div>
+                            <div class="col-8">
+                                <InputNumber readonly @bind-Value="Model2.Masraf" class="form-control text-end">
+                                </InputNumber>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col-6">
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-trash" />
+                            İptal
+                        </button>
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-check" />
+                            Tamam
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="container shadow border">
+            <div class="row mt-1">
+                <div class="col">
+                    <label class="fw-lighter">
+                        Cihaz 1 Teslim Adresi
+                    </label>
+                </div>
+            </div>
+            <div class="row justify-content-end mt-2">
+                <div class="col-4">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" />
+                        Yeni Adres Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <tbody>
+                            @foreach (var Adres in Adresler)
+                            {
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold"> <i class="fa fa-home" /> @Adres.AdresKodu</label>
+                                        <label> @Adres.AdresDetay</label>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        <div class="container shadow border">
+            <div class="row mt-1">
+                <div class="col">
+                    <label class="fw-lighter">
+                        Cari Seçimi
+                    </label>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-6">
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <InputSelect @bind-Value="Model!.Bayi" class="form-select">
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <InputSelect @bind-Value="Model!.Bayi" class="form-select">
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <InputSelect @bind-Value="Model!.Bayi" class="form-select">
+                            </InputSelect>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <InputSelect @bind-Value="Model!.Bayi" class="form-select">
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <InputSelect @bind-Value="Model!.Bayi" class="form-select">
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="d-flex">
+                                <InputText @bind-Value="Model!.UrunAdi" class="form-control" placeholder="Aranacak Değer" />
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="fa fa-search" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-end mt-2">
+                <div class="col-4">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" />
+                        Yeni Cari Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <table class="table table-hover">
+                    <tbody>
+                        @foreach (var Cari in Cariler)
+                        {
+                            <tr>
+                                <td>@Cari.Unvan</td>
+                                <td>@Cari.Adres</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="container shadow border">
+            <div class="row mt-1">
+                <div class="col">
+                    <label class="fw-lighter">
+                        Ödeme Planı
+                    </label>
+                </div>
+            </div>
+            <div class="row justify-content-end mt-1">
+                <div class="col-3">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fa fa-plus" />
+                        Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Belge</th>
+                            <th>Vade</th>
+                            <th>Taksit</th>
+                            <th>Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var OdemePlani in OdemePlanlari)
+                        {
+                            <tr>
+                                <th scope="row">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fa fa-minus" />
+                                    </button>
+                                </th>
+                                <td>@OdemePlani.Belge</td>
+                                <td>@OdemePlani.Vade</td>
+                                <td>@OdemePlani.Taksit</td>
+                                <td>@OdemePlani.Tutar</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<UrunPopUp @ref="UrunDialog" UrunEkle="SatisEkle" />
+
+@code {
+
+    [SupplyParameterFromForm]
+    private SatisSiparisFiltre? Model { get; set; }
+
+    [SupplyParameterFromForm]
+    private Hesaplama Model2 { get; set; }
+
+    private List<(String id, string lable)>? TurSecenek { get; set; }
+
+    private UrunPopUp UrunDialog;
+
+    List<Satislar> Satislar = new List<Satislar>();
+
+    List<Adres> Adresler = new List<Adres>();
+
+    List<Cari> Cariler = new List<Cari>();
+
+    List<OdemePlani> OdemePlanlari = new List<OdemePlani>();
+
+    List<IskontoMasraf> IskontoMasraflar = new List<IskontoMasraf>();
+
+    private void SatisSil(string UrunKodu)
+    {
+        var c = Satislar.Find(x => x.UrunKodu == UrunKodu);
+        Satislar.Remove(c);
+        StateHasChanged();
+    }
+
+    private void SatisEkle()
+    {
+        var satis = new Satislar()
+        {
+            UrunKodu = UrunDialog.urun.UrunKodu,
+            UrunAdi = UrunDialog.urun.UrunAdi,
+            Fiyat = "0",
+            Indirim = "0",
+            Miktar = "0",
+            Odeme = "0",
+            Pesinat = "0",
+            TaksitAdet = "0",
+            TaksitTutar = "0",
+            ToplamTutar = "0",
+        };
+        Satislar.Add(satis);
+        UrunDialog.Close();
+    }
+
+    private void Submit() { }
+
+    private void UrunDialogAc()
+    {
+        UrunDialog.Show();
+    }
+
+    protected override void OnInitialized()
+    {
+        Model ??= new() { Tarih = DateTime.UtcNow };
+
+        Model2 = new() { SatirTutari = 14000 };
+
+        var list = new List<(String id, string lable)>();
+        list.Add(("TE", "Teklif"));
+        list.Add(("SI", "Sipariş"));
+        list.Add(("SA", "Satış"));
+
+        TurSecenek = list;
+
+        for (var i = 1; i < 6; i++)
+        {
+            var satislar = new Satislar()
+            {
+                UrunKodu = "URUN" + i,
+                UrunAdi = "Test Ürün " + i,
+                Fiyat = "100",
+                Indirim = "0",
+                Miktar = i.ToString(),
+                Odeme = "50",
+                Pesinat = "0",
+                TaksitAdet = i.ToString(),
+                TaksitTutar = "100",
+                ToplamTutar = "100",
+            };
+            Satislar.Add(satislar);
+        }
+
+        Adresler.Add(new Adres()
+        {
+            AdresKodu = "Ev Adresi",
+            AdresDetay = "SAHİL MAH Kaptanı Derya Sk. No: 9 K.1 D: 20 34524 BEYLİKDÜZÜ / İSTANBUL"
+        });
+        Adresler.Add(new Adres()
+        {
+            AdresKodu = "İş Adresi",
+            AdresDetay = "YENİBOSNA MERKEZ MAH 29 Ekim Caddesi İhlas Plaza No:11 B/11 34197 BAHÇELİEVLER / İSTANBUL"
+        });
+        Adresler.Add(new Adres()
+        {
+            AdresKodu = "Memleketi (Köy)",
+            AdresDetay = "EMİNAÇMA KÖYÜ No: 80 (Caminin Arkası) 81100 MERKEZ / DÜZCE"
+        });
+
+        for (var i = 1; i < 6; i++)
+        {
+            Cariler.Add(new Cari()
+            {
+                Unvan = "Unvan " + i,
+                Adres = "Adres " + i
+            });
+        }
+
+        for (var i = 1; i < 6; i++)
+        {
+            OdemePlanlari.Add(new OdemePlani()
+            {
+                Belge = "Belge " + i,
+                Vade = "Vade " + i,
+                Taksit = i,
+                Tutar = i * 100
+            });
+        }
+        IskontoMasraflar.Add(new IskontoMasraf()
+        {
+            Tur = "İskonto",
+            Hesaplama = "Tutar (TL)",
+            Miktar = 2,
+            Hesaplanan = 400,
+            Aciklama = "Test"
+        });
+        IskontoMasraflar.Add(new IskontoMasraf()
+        {
+            Tur = "Masraf",
+            Hesaplama = "Oran (%)",
+            Miktar = 2,
+            Hesaplanan = -700,
+            Aciklama = "Test"
+        });
+        foreach (var tmp in IskontoMasraflar)
+        {
+            if (tmp.Tur == "Masraf")
+            {
+                Model2.Masraf += tmp.Hesaplanan;
+            }
+            else if (tmp.Tur == "İskonto")
+            {
+                Model2.Iskonto += tmp.Hesaplanan;
+            }
+
+        }
+        Model2.IskontoMasraf = Model2.Iskonto + Model2.Masraf;
+        Model2.SonucTutari = Model2.SatirTutari + Model2.IskontoMasraf;
+    }
+
+}

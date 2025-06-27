@@ -1,0 +1,116 @@
+﻿@using BlazorApp1.Models
+<div class="modal fade @ModalClass" style="display:@ModalDisplay">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title d-flex align-items-center">
+                    Ürün Listesi
+                </h5>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ürün Kodu</th>
+                                    <th>Ürün Adı</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Urun in Urunler)
+                                {
+                                    <tr>
+                                        <th scope="row">
+                                            <button type="submit" class="btn btn-outline-light text-dark" @onclick="@(e => Add(@Urun.UrunKodu, @Urun.UrunAdi))">
+                                                <i class="fa fa-plus" />
+                                            </button>
+                                        </th>
+                                        <td>
+                                            @Urun.UrunKodu
+                                        </td>
+                                        <td>
+                                            @Urun.UrunAdi
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="Close">
+                    <i class="fa fa-lock me-1"></i> Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> UrunEkle { get; set; }
+
+    public Urun urun { get; set; }
+
+    public string ModalClass = "";
+
+    public string ModalDisplay = "none";
+
+    List<Urun> Urunler = new List<Urun>();
+
+    protected override void OnInitialized()
+    {
+
+
+        for (var i = 1; i < 11; i++)
+        {
+            var Urun = new Urun()
+            {
+                UrunKodu = "URUN" + i,
+                UrunAdi = "Test Ürün " + i
+            };
+            Urunler.Add(Urun);
+        }
+        base.OnInitialized();
+    }
+
+    public void Show()
+    {
+        ModalClass = "show";
+        ModalDisplay = "block";
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalClass = "";
+        ModalDisplay = "none";
+        StateHasChanged();
+    }
+
+    public async Task Add(string UrunKodu, string UrunAdi)
+    {
+        urun = new Urun(){
+            UrunKodu = UrunKodu,
+            UrunAdi = UrunAdi
+        };
+        await UrunEkle.InvokeAsync();
+    }
+
+}

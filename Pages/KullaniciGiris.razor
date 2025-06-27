@@ -1,0 +1,37 @@
+﻿@page "/kullanicigiris"
+
+@using BlazorApp1.Models
+
+<PageTitle>Kullanıcı Giriş</PageTitle>
+
+<h3>Kullanıcı Girişi</h3>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <p style="color:red">@ErrorMessage</p>
+}
+
+<EditForm Model="user" OnValidSubmit="HandleLogin">
+    <InputText @bind-Value="user.Username" placeholder="Kullanıcı Adı" />
+    <br />
+    <InputText @bind-Value="user.Password" placeholder="Şifre" type="password" />
+    <br />
+    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+</EditForm>
+
+@code {
+    private Kullanici user = new();
+    private string ErrorMessage = null;
+
+    private void HandleLogin()
+    {
+        if (user.Username == "admin" &&  user.Password == "123")
+        {
+            ErrorMessage = "Giriş Başarılı.";
+        }
+        else
+        {
+            ErrorMessage = "Kullanıcı Adı veya Şifre Hatalı.";
+        }
+    }
+}
